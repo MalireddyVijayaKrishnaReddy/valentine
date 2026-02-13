@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💝</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hearts-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatHeart 8s infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: cardEntrance 1s ease-out;
+            position: relative;
+        }
+        
+        .question-card.hidden {
+            display: none;
+        }
+
+        @keyframes cardEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .bear-emoji {
+            font-size: 80px;
+            animation: bounce 2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.5rem;
+            color: #d946ef;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 2px 2px 4px rgba(217, 70, 239, 0.3); }
+            50% { text-shadow: 2px 2px 20px rgba(217, 70, 239, 0.6); }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            position: relative;
+            min-height: 120px;
+        }
+
+        button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .yes-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .yes-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(245, 87, 108, 0.4);
+        }
+
+        .no-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        .no-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* ROSE ANIMATION */
+        .rose-scene {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            display: none;
+            z-index: 20;
+        }
+
+        .rose-scene.active {
+            display: block;
+        }
+
+        .rose-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rose {
+            position: relative;
+            width: 180px;
+            height: 180px;
+        }
+
+        /* Closed bud - starts as oval */
+        .bud {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 70px;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            border-radius: 50% 50% 40% 40%;
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.6);
+            animation: budOpen 2s ease-out forwards;
+            z-index: 10;
+        }
+
+        @keyframes budOpen {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Outer petals */
+        .petal-outer {
+            position: absolute;
+            width: 70px;
+            height: 90px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #DC143C 50%, #8B0000 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 50%;
+            left: 50%;
+            transform-origin: center bottom;
+            opacity: 0;
+            box-shadow: inset -5px -5px 15px rgba(139, 0, 0, 0.3),
+                        0 5px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        .petal-outer:nth-child(1) {
+            animation: petalBloom1 1.2s ease-out 2s forwards;
+        }
+
+        .petal-outer:nth-child(2) {
+            animation: petalBloom2 1.2s ease-out 2.2s forwards;
+        }
+
+        .petal-outer:nth-child(3) {
+            animation: petalBloom3 1.2s ease-out 2.4s forwards;
+        }
+
+        .petal-outer:nth-child(4) {
+            animation: petalBloom4 1.2s ease-out 2.6s forwards;
+        }
+
+        .petal-outer:nth-child(5) {
+            animation: petalBloom5 1.2s ease-out 2.8s forwards;
+        }
+
+        @keyframes petalBloom1 {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, calc(-50% - 40px)) rotate(-20deg) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes petalBloom2 {
+            0% {
+                transform: translate(-50%, -50%) rotate(72deg) scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(10px, calc(-50% - 20px)) rotate(52deg) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes petalBloom3 {
+            0% {
+                transform: translate(-50%, -50%) rotate(144deg) scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(15px, -10px) rotate(124deg) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes petalBloom4 {
+            0% {
+                transform: translate(-50%, -50%) rotate(216deg) scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-65px, -10px) rotate(196deg) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes petalBloom5 {
+            0% {
+                transform: translate(-50%, -50%) rotate(288deg) scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-60px, calc(-50% - 20px)) rotate(268deg) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        /* Inner petals - smaller, tighter */
+        .petal-inner {
+            position: absolute;
+            width: 50px;
+            height: 65px;
+            background: linear-gradient(135deg, #FF1744, #C2185B);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 50%;
+            left: 50%;
+            transform-origin: center bottom;
+            opacity: 0;
+            box-shadow: inset -3px -3px 10px rgba(194, 24, 91, 0.4),
+                        0 3px 15px rgba(255, 23, 68, 0.3);
+            z-index: 5;
+        }
+
+        .petal-inner:nth-child(6) {
+            animation: innerPetalBloom1 1s ease-out 3.2s forwards;
+        }
+
+        .petal-inner:nth-child(7) {
+            animation: innerPetalBloom2 1s ease-out 3.4s forwards;
+        }
+
+        .petal-inner:nth-child(8) {
+            animation: innerPetalBloom3 1s ease-out 3.6s forwards;
+        }
+
+        @keyframes innerPetalBloom1 {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, calc(-50% - 15px)) rotate(-30deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes innerPetalBloom2 {
+            0% {
+                transform: translate(-50%, -50%) rotate(120deg) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(5px, calc(-50% - 8px)) rotate(90deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes innerPetalBloom3 {
+            0% {
+                transform: translate(-50%, -50%) rotate(240deg) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-55px, calc(-50% - 8px)) rotate(210deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Center of rose */
+        .rose-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #8B0000, #DC143C);
+            border-radius: 50%;
+            opacity: 0;
+            animation: centerAppear 0.5s ease-out 4s forwards;
+            box-shadow: 0 0 25px rgba(220, 20, 60, 0.8),
+                        inset -3px -3px 8px rgba(139, 0, 0, 0.6);
+            z-index: 8;
+        }
+
+        @keyframes centerAppear {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Stem */
+        .stem {
+            position: absolute;
+            bottom: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 120px;
+            background: linear-gradient(to bottom, #228B22, #006400);
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 100, 0, 0.5);
+        }
+
+        /* GIFT BOX FALLING */
+        .gift-box {
+            position: fixed;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 30;
+            display: none;
+        }
+
+        .gift-box.falling {
+            display: block;
+            animation: boxFall 2s ease-in forwards;
+        }
+
+        @keyframes boxFall {
+            0% {
+                top: -150px;
+                transform: translateX(-50%) rotate(0deg);
+            }
+            100% {
+                top: calc(100vh - 120px);
+                transform: translateX(-50%) rotate(360deg);
+            }
+        }
+
+        .gift-box:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        .box-body {
+            width: 80px;
+            height: 55px;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(196, 69, 105, 0.6);
+        }
+
+        .box-lid {
+            width: 80px;
+            height: 20px;
+            background: linear-gradient(135deg, #ffa07a, #ff6b9d);
+            border-radius: 8px 8px 0 0;
+            position: absolute;
+            top: -12px;
+            box-shadow: 0 4px 12px rgba(255, 107, 157, 0.6);
+        }
+
+        .ribbon-v {
+            width: 15px;
+            height: 70px;
+            background: linear-gradient(to right, #ffd700, #ffed4e);
+            position: absolute;
+            left: 50%;
+            top: -12px;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+        }
+
+        .ribbon-h {
+            width: 80px;
+            height: 15px;
+            background: linear-gradient(to bottom, #ffd700, #ffed4e);
+            position: absolute;
+            top: 20px;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+        }
+
+        .bow {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 20px;
+            background: #ffd700;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.6);
+        }
+
+        .bow::before,
+        .bow::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            width: 18px;
+            height: 18px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(255, 215, 0, 0.5);
+        }
+
+        .bow::before {
+            left: -15px;
+        }
+
+        .bow::after {
+            right: -15px;
+        }
+
+        .click-me-text {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: clickBlink 1.5s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes clickBlink {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.5; transform: translateX(-50%) scale(1.05); }
+        }
+
+        /* TOP MESSAGE */
+        .top-message {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Pacifico', cursive;
+            font-size: 3rem;
+            color: #DC143C;
+            text-shadow: 3px 3px 6px rgba(220, 20, 60, 0.3);
+            z-index: 25;
+            opacity: 0;
+            display: none;
+        }
+
+        .top-message.show {
+            display: block;
+            animation: messageAppear 1s ease-out forwards, messageGlow 2s ease-in-out 1s infinite;
+        }
+
+        @keyframes messageAppear {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes messageGlow {
+            0%, 100% {
+                text-shadow: 3px 3px 6px rgba(220, 20, 60, 0.3);
+            }
+            50% {
+                text-shadow: 3px 3px 25px rgba(220, 20, 60, 0.8);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            z-index: 100;
+            animation: confettiFall 3s linear;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .bear-emoji {
+                font-size: 60px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 12px 30px;
+            }
+
+            .rose-scene {
+                width: 200px;
+                height: 200px;
+            }
+
+            .rose {
+                width: 150px;
+                height: 150px;
+            }
+
+            .petal-outer {
+                width: 60px;
+                height: 75px;
+            }
+
+            .petal-inner {
+                width: 40px;
+                height: 55px;
+            }
+
+            .gift-box {
+                width: 70px;
+                height: 70px;
+            }
+
+            .box-body {
+                width: 70px;
+                height: 48px;
+            }
+
+            .box-lid {
+                width: 70px;
+            }
+
+            .ribbon-h {
+                width: 70px;
+            }
+
+            .top-message {
+                font-size: 2rem;
+                top: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-background" id="heartsBackground"></div>
+
+    <div class="container">
+        <div class="question-card" id="questionCard">
+            <div class="bear-emoji">🧸</div>
+            <h1>Will You Be My Valentine?</h1>
+            <div class="subtitle">Hey Chikki! 💕</div>
+            
+            <div class="buttons-container" id="buttonsContainer">
+                <button class="yes-button" id="yesButton">Yes! 💖</button>
+                <button class="no-button" id="noButton">No 😢</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rose Scene -->
+    <div class="rose-scene" id="roseScene">
+        <div class="rose-container">
+            <div class="rose">
+                <div class="bud"></div>
+                <div class="petal-outer"></div>
+                <div class="petal-outer"></div>
+                <div class="petal-outer"></div>
+                <div class="petal-outer"></div>
+                <div class="petal-outer"></div>
+                <div class="petal-inner"></div>
+                <div class="petal-inner"></div>
+                <div class="petal-inner"></div>
+                <div class="rose-center"></div>
+            </div>
+            <div class="stem"></div>
+        </div>
+    </div>
+
+    <!-- Gift Box -->
+    <div class="gift-box" id="giftBox">
+        <div class="bow"></div>
+        <div class="box-lid"></div>
+        <div class="ribbon-v"></div>
+        <div class="box-body"></div>
+        <div class="ribbon-h"></div>
+        <div class="click-me-text">Click Me!</div>
+    </div>
+
+    <!-- Top Message -->
+    <div class="top-message" id="topMessage">My heart is yours!</div>
+
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = Math.random() > 0.5 ? '💖' : '💕';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            document.getElementById('heartsBackground').appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 8000);
+        }
+
+        setInterval(createHeart, 500);
+
+        const noButton = document.getElementById('noButton');
+        const yesButton = document.getElementById('yesButton');
+        const questionCard = document.getElementById('questionCard');
+        const roseScene = document.getElementById('roseScene');
+        const giftBox = document.getElementById('giftBox');
+        const topMessage = document.getElementById('topMessage');
+        const buttonsContainer = document.getElementById('buttonsContainer');
+
+        const noMessages = [
+            "No 😢", "Are you sure? 🥺", "Really? 😭", "Please? 🙏",
+            "Don't break my heart! 💔", "Think again? 😢", "Pretty please? 🥹",
+            "I'll be sad... 😞", "One more chance? 🌹", "Chikki, please! 💕",
+            "My heart... 💔", "You're killing me! 😭", "Just say yes! 💖"
+        ];
+
+        let noClickCount = 0;
+
+        function moveNoButton() {
+            const container = buttonsContainer.getBoundingClientRect();
+            const button = noButton.getBoundingClientRect();
+            
+            const padding = 10;
+            const maxX = container.width - button.width - padding;
+            const maxY = container.height - button.height - padding;
+            
+            let newX = Math.max(padding, Math.random() * maxX);
+            let newY = Math.max(padding, Math.random() * maxY);
+            
+            newX = Math.min(newX, maxX);
+            newY = Math.min(newY, maxY);
+            
+            noButton.style.left = newX + 'px';
+            noButton.style.top = newY + 'px';
+            
+            noClickCount++;
+            if (noClickCount < noMessages.length) {
+                noButton.textContent = noMessages[noClickCount];
+            }
+            
+            const currentScale = 1 + (noClickCount * 0.05);
+            yesButton.style.transform = `scale(${currentScale})`;
+        }
+
+        noButton.addEventListener('mouseenter', moveNoButton);
+        noButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+        noButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        yesButton.addEventListener('click', () => {
+            createConfetti();
+            
+            questionCard.style.animation = 'cardEntrance 0.5s ease-out reverse';
+            
+            setTimeout(() => {
+                questionCard.classList.add('hidden');
+                roseScene.classList.add('active');
+                
+                // Box falls after rose blooms (4.5 seconds)
+                setTimeout(() => {
+                    giftBox.classList.add('falling');
+                }, 4500);
+            }, 500);
+            
+            const rapidHeartInterval = setInterval(createHeart, 100);
+            setTimeout(() => clearInterval(rapidHeartInterval), 5000);
+        });
+
+        giftBox.addEventListener('click', () => {
+            createConfetti();
+            
+            // Box disappears
+            giftBox.style.animation = 'cardEntrance 0.3s ease-out reverse';
+            setTimeout(() => {
+                giftBox.style.display = 'none';
+            }, 300);
+            
+            // Message appears at top
+            topMessage.classList.add('show');
+
+            const rapidHeartInterval = setInterval(createHeart, 80);
+            setTimeout(() => clearInterval(rapidHeartInterval), 4000);
+        });
+
+        function createConfetti() {
+            const colors = ['#f093fb', '#f5576c', '#d946ef', '#667eea', '#ffd700', '#ff69b4', '#dc143c'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        setTimeout(() => {
+            noButton.style.position = 'relative';
+            noButton.style.left = '0';
+            noButton.style.top = '0';
+        }, 100);
+    </script>
+</body>
+</html>
